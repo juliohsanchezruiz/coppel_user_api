@@ -155,11 +155,12 @@ def user_update():
     return Response(response=json.dumps(response), status=400, mimetype='application/json')
 
 
-class Comics(db.EmbeddedDocument):
+class Comics(db.Document):
     comic_id = db.IntField()
     name = db.StringField()
     imagen = db.StringField()
     onsaleDate = db.StringField()
+
 
 class User(db.Document):
     __tablename__ = 'users'
@@ -167,7 +168,7 @@ class User(db.Document):
     age = db.IntField()
     email = db.StringField()
     password = db.StringField()
-    comics = db.EmbeddedDocumentField(Comics)
+    comics = db.ListField()
 
 
 def check_password(user, password):
