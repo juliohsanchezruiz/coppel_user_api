@@ -26,7 +26,7 @@ services:
     volumes:
       - ./app:/app
     networks:
-      - default
+      - coppel
   database:
     image: mongo:latest
     env_file:
@@ -44,6 +44,10 @@ services:
     ports:
       - '27017-27019:27017-27019'
     networks:
-      - default
+      - coppel
 volumes:
   persistent:
+
+networks:
+  coppel:
+    driver: bridge
