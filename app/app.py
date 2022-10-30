@@ -9,6 +9,7 @@ from jsonschema import ValidationError
 from flask_mongoengine import MongoEngine
 from flask_expects_json import expects_json
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required, JWTManager
+from mongoengine import EmbeddedDocumentField, ReferenceField
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 
@@ -155,21 +156,25 @@ def user_update():
     return Response(response=json.dumps(response), status=400, mimetype='application/json')
 
 
-class Comics(db.Document):
-    comic_id = db.IntField()
-    name = db.StringField()
-    imagen = db.StringField()
-    onsaleDate = db.StringField()
-
-
 class User(db.Document):
     __tablename__ = 'users'
     name = db.StringField(required=True)
     age = db.IntField()
     email = db.StringField()
     password = db.StringField()
-    comics = db.ListField()
-
+    meta = {
+        'indexes': [
+            'email',  # single-field index
+        ]
+    }
+class Comics(db.Document):
+    comic_id = db.IntField()
+    name = db.StringField()
+    imagen = db.StringField()
+    onsaleDate = db.StringField()
+    character = db.StringField()
+    created_at = db.DateTimeField(default=datetime.utcnow)
+    user = db.ReferenceField(User)
 
 def check_password(user, password):
     return check_password_hash(user.password, password)
